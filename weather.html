@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather </title>
+    <style>
+        body{
+            font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            background-color: rgb(178, 219, 235);
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 50px;
+        }
+        input, button {
+            margin: 10px;
+            padding: 10px;
+            font-size: 27px;
+        }
+        #weather {
+            margin-top: 20px;
+            font-size: 35px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Weather App</h1>
+    <input type="text" id="cityInput" placeholder="Enter city name">
+    <button onclick="getWeather()">Get Weather</button>
+    <div id="weather">Enter a city and press the button</div>
+
+    <script>
+        const apiKey = 'a27d389a7754ae57485b46c9a1c2f5d5'; 
+        
+        function getWeather() {
+            const city = document.getElementById("cityInput").value;
+            if (!city) {
+                alert("Please enter a city name");
+                return;
+            }
+            
+            const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+            
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.cod === "404") {
+                        document.getElementById("weather").innerHTML = "City not found. Try again.";
+                        return;
+                    }
+                    
+                    const cityName = data.name;
+                    const temperature = data.main.temp;
+                    const weatherDescription = data.weather[0].description;
+
+                    document.getElementById("weather").innerHTML = `
+                        <h2>${cityName}</h2>
+                        <p>Temperature: ${temperature}°C</p>
+                        <p>Condition: ${weatherDescription}</p>
+                    `;
+                })
+                .catch(error => console.error("Error fetching weather data:", error));
+        }
+    </script>
+</body>
+</html>
+
